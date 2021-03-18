@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ui_training_5/course_index.dart';
 
 void main()=>runApp(new MyApp());
@@ -30,9 +31,38 @@ const xdLogoUrl =
     'https://user-images.githubusercontent.com/7200238/83145578-f558e500-a12f-11ea-85fa-3e26a966d180.png';
 
 /*FVページ*/
-class MyHomePage extends StatelessWidget{
+class MyHomePage extends HookWidget{
+
   @override
   Widget build(BuildContext context) {
+
+    /*add animation*/
+    final _animationController = useAnimationController(
+      duration: const Duration(milliseconds: 1000),
+    );
+
+    final tween = Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset(-1.0, 0.0),
+    );
+
+    final Animation<Offset> _animation1 = tween.animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Interval(0.0, 0.7, curve: Curves.easeInOutBack),
+    ));
+    final Animation<Offset> _animation2 = tween.animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Interval(0.1, 0.8, curve: Curves.easeInOutBack),
+    ));
+    final Animation<Offset> _animation3 = tween.animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Interval(0.2, 0.9, curve: Curves.easeInOutBack),
+    ));
+    final Animation<Offset> _animation4 = tween.animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Interval(0.3, 1.0, curve: Curves.easeInOutBack),
+    ));
+
     // TODO: implement build
     return Scaffold(
       body: SingleChildScrollView(
@@ -40,18 +70,35 @@ class MyHomePage extends StatelessWidget{
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              Header(title: 'TurtleU'),
-              _Hero(),
-              _Featured(),
-              _TrendingCourses(),
+
+              SlideTransition(
+              position: _animation1,
+              child: Header(title: 'TurtleU'),
+              ),
+              SlideTransition(
+                position: _animation2,
+                child: _Hero(),
+              ),
+              SlideTransition(
+                position: _animation3,
+                child: _Featured(),
+              ),
+              SlideTransition(
+                position: _animation4,
+                child: _TrendingCourses(),
+              )
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CourseIndex()));
-        },
+          _animationController.forward().then((_) {
+            Navigator.of(context).push(
+              PageRouteBuilder(pageBuilder: (_, __, ___) => CourseIndex()),
+            ).then((_) => _animationController.reverse());
+            });
+          },
         child: Icon(Icons.list),
       ),
     );

@@ -1,9 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:ui_training_5/main.dart';
 
-class CourseIndex extends StatelessWidget{
+class CourseIndex extends HookWidget{
   @override
   Widget build(BuildContext context) {
+    final _animationController = useAnimationController(
+      duration: const Duration(milliseconds: 1000),
+    );
+
+    final _animationHorizontal = Tween<Offset>(
+      begin: Offset(-1.0, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOutBack,
+    ));
+    final _animationVertical = Tween<Offset>(
+      begin: Offset(0.0, 1.5),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOutBack,
+    ));
+    _animationController.forward();
+
+
     // TODO: implement build
     return Scaffold(
       body: SingleChildScrollView(
@@ -11,8 +33,14 @@ class CourseIndex extends StatelessWidget{
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              Header(title: 'Courses'),
-              _Recomended()
+              SlideTransition(
+                position: _animationHorizontal,
+                child: Header(title: 'Courses'),
+              ),
+              SlideTransition(
+                position: _animationVertical,
+                child: _Recommended(),
+              )
             ],
           ),
         ),
@@ -20,16 +48,19 @@ class CourseIndex extends StatelessWidget{
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.arrow_back),
         onPressed: (){
-          Navigator.of(context).pop();
+          _animationController.reverse().then((_) {
+            Navigator.of(context).pop();
+          });
         },
       ),
     );
   }
 }
 
-class _Recomended extends StatelessWidget{
+class _Recommended extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
+
     // TODO: implement build
     return Column(
       children: [
