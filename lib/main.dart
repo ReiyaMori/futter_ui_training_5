@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui_training_5/course_index.dart';
 
 void main()=>runApp(new MyApp());
 
@@ -39,7 +40,7 @@ class MyHomePage extends StatelessWidget{
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              _Header(title: 'TurtleU'),
+              Header(title: 'TurtleU'),
               _Hero(),
               _Featured(),
               _TrendingCourses(),
@@ -48,16 +49,18 @@ class MyHomePage extends StatelessWidget{
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CourseIndex()));
+        },
         child: Icon(Icons.list),
       ),
     );
   }
 }
 
-class _Header extends StatelessWidget{
+class Header extends StatelessWidget{
   final String title;
-  const _Header({this.title}):super();
+  const Header({this.title}):super();
 
   @override
   Widget build(BuildContext context) {
@@ -234,6 +237,7 @@ class _TrendingCourses extends StatelessWidget{
               _SkillCard(name: 'Communication Skills'),
               _SkillCard(name: 'Digital Marketing 101'),
               _SkillCard(name: 'UX Research'),
+              SizedBox(height: 5,),
               ElevatedButton(
                   onPressed: (){},
                   child: Container(
